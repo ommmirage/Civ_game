@@ -227,6 +227,7 @@ GameObject:
   - component: {fileID: 963194228}
   - component: {fileID: 963194227}
   - component: {fileID: 963194226}
+  - component: {fileID: 963194229}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -299,6 +300,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+--- !u!114 &963194229
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 963194225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a70ae897ffb19d44a706db104567d01, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1412781721
 GameObject:
   m_ObjectHideFlags: 0
@@ -334,7 +347,8 @@ MonoBehaviour:
   - {fileID: 2100000, guid: f0f04cb1a9b2c80408b7010fadcc0b96, type: 2}
   - {fileID: 2100000, guid: b9cea59829f6d0843864d88828f075d7, type: 2}
   - {fileID: 2100000, guid: f47cb81a50d103546a6271506c42cbb1, type: 2}
-  mapHeight: 20
+  numRows: 20
+  numColumns: 40
 --- !u!4 &1412781723
 Transform:
   m_ObjectHideFlags: 0

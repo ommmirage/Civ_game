@@ -7,7 +7,8 @@ public class HexMap : MonoBehaviour
     [SerializeField] public GameObject hexPrefab;
     [SerializeField] public Material[] hexMaterials;
 
-    [SerializeField] int mapHeight = 20;
+    [SerializeField] int numRows = 20;
+    [SerializeField] int numColumns = 40;
 
     void Start()
     {
@@ -16,11 +17,9 @@ public class HexMap : MonoBehaviour
 
     public void GenerateMap()
     {
-        int mapWidth = mapHeight * 2;
-        
-        for (int x = 0; x < mapWidth; x++)
+        for (int x = 0; x < numColumns; x++)
         {
-            for (int y = 0; y < mapHeight; y++)
+            for (int y = 0; y < numRows; y++)
             {
                 Hex hex = new Hex(x, y);
 
