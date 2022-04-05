@@ -4,10 +4,14 @@ using UnityEngine;
 
 public class CameraMover : MonoBehaviour
 {
+    HexMap hexMap;
+
     Vector3 oldPosition;
 
     void Start()
     {
+        hexMap = FindObjectOfType<HexMap>();
+
         oldPosition = transform.position;
     }
 
@@ -22,7 +26,7 @@ public class CameraMover : MonoBehaviour
         {
             oldPosition = transform.position;
 
-            
+            hexMap.UpdateHexPositions();
         }
     }
 }

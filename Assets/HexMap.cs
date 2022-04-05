@@ -10,8 +10,9 @@ public class HexMap : MonoBehaviour
     [SerializeField] int numColumns = 40;
     [SerializeField] int numRows = 20;
 
-    Hex[,] map;
-    public Hex[,] Map { get { return map; } }
+    GameObject[,] hexObjects;
+    Hex[,] hexes;
+    // public GameObject[,] HexObjects { get { return hexObjects; } }
 
     void Start()
     {
@@ -20,28 +21,40 @@ public class HexMap : MonoBehaviour
 
     public void GenerateMap()
     {
-        map = new Hex[numColumns, numRows];
+        hexObjects = new GameObject[numColumns, numRows];
+        hexes = new Hex[numColumns, numRows];
 
         for (int x = 0; x < numColumns; x++)
         {
             for (int y = 0; y < numRows; y++)
             {
-                map[x, y] = new Hex(x, y);
-
-                Vector3 posFromCamera = map[x, y].PositionFromCamera(numRows, numColumns);
+                hexes[x, y] = new Hex(x, y);
+                Vector3 position = hexes[x, y].PositionFromCamera(numColumns, numRows);
 
                 GameObject hexObject = Instantiate(
                     hexPrefab, 
-                    posFromCamera,
-                    // map[x,y].Position(), 
+                    position,
                     new Quaternion(),
                     transform
                 );
+
+                hexObjects[x, y] = hexObject;
 
                 MeshRenderer meshRenderer = hexObject.GetComponentInChildren<MeshRenderer>();
                 meshRenderer.material = hexMaterials[ Random.Range(0, hexMaterials.Length) ];
             }
         }
+    }
 
+    public void UpdateHexPositions()
+    {
+        for (int x = 0; x < numColumns; x++)
+        {
+            for (int y = 0; y < numRows; y++)
+            {
+                Vector3 newPosition = hexes[x, y].PositionFromCamera(numColumns, numRows);
+                hexObjects[x, y].transform.position = newPosition;
+            }
+        }
     }
 }

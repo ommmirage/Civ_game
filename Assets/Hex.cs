@@ -57,7 +57,7 @@ public class Hex
         return Width();
     }
 
-    public Vector3 PositionFromCamera(float numRows, float numColumns)
+    public Vector3 PositionFromCamera(float numColumns, float numRows)
     {
         Vector3 position = Position();
 
