@@ -57,21 +57,24 @@ public class Hex
         return Width();
     }
 
-    // public Vector3 PositionFromCamera(Vector3 cameraPosition, float numRows, float numColumns)
-    // {
-        // // float mapHeight = numRows * HorizontalSpacing();
-        // float mapWidth = numColumns * VerticalSpacing();
+    public Vector3 PositionFromCamera(float numRows, float numColumns)
+    {
+        Vector3 position = Position();
 
-        // float mapWidthsFromCenter = (Position.x - cameraPosition.x) / mapWidth;
+        // float mapHeight = numRows * VerticalSpacing();
+        float mapWidth = numColumns * HorizontalSpacing();
 
-        // // We want widthAmountFromCamera to be in [-0,5; 0,5]
-        // if (mapWidthsFromCenter > 0.5f)
-        // {
-        //     mapWidthsFromCenter -= 1f;
-        // }
-        // else if (mapWidthsFromCenter < -0.5f)
-        // {
-        //     mapWidthsFromCenter += 1f;
-        // }
-    // }
+        float cameraPosX = Camera.main.transform.position.x;
+
+        float mapWidthsFromCenter = (position.x - cameraPosX) / mapWidth;
+
+        // We want widthAmountFromCamera to be in [-0,5; 0,5]
+        if (mapWidthsFromCenter > 0.5f)
+        {
+            mapWidthsFromCenter -= 1f;
+            position.x = mapWidthsFromCenter * mapWidth;
+        }
+
+        return position;
+    }
 }

@@ -7,8 +7,11 @@ public class HexMap : MonoBehaviour
     [SerializeField] public GameObject hexPrefab;
     [SerializeField] public Material[] hexMaterials;
 
-    [SerializeField] int numRows = 20;
     [SerializeField] int numColumns = 40;
+    [SerializeField] int numRows = 20;
+
+    Hex[,] map;
+    public Hex[,] Map { get { return map; } }
 
     void Start()
     {
@@ -17,15 +20,20 @@ public class HexMap : MonoBehaviour
 
     public void GenerateMap()
     {
+        map = new Hex[numColumns, numRows];
+
         for (int x = 0; x < numColumns; x++)
         {
             for (int y = 0; y < numRows; y++)
             {
-                Hex hex = new Hex(x, y);
+                map[x, y] = new Hex(x, y);
+
+                Vector3 posFromCamera = map[x, y].PositionFromCamera(numRows, numColumns);
 
                 GameObject hexObject = Instantiate(
                     hexPrefab, 
-                    hex.Position(), 
+                    posFromCamera,
+                    // map[x,y].Position(), 
                     new Quaternion(),
                     transform
                 );
@@ -35,6 +43,5 @@ public class HexMap : MonoBehaviour
             }
         }
 
-        
     }
 }
