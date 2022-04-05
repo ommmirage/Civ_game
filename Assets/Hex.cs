@@ -72,7 +72,12 @@ public class Hex
         if (mapWidthsFromCenter > 0.5f)
         {
             mapWidthsFromCenter -= 1f;
-            position.x = mapWidthsFromCenter * mapWidth;
+            position.x = mapWidthsFromCenter * mapWidth + cameraPosX;
+        }
+        else if (mapWidthsFromCenter < -0.5f)
+        {
+            mapWidthsFromCenter += 1f;
+            position.x = mapWidthsFromCenter * mapWidth  + cameraPosX;
         }
 
         return position;
