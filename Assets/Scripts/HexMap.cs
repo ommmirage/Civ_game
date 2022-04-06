@@ -7,7 +7,10 @@ public class HexMap : MonoBehaviour
     [SerializeField] GameObject hexPrefab;
 
     [SerializeField] int numColumns = 40;
+    public int NumColumns { get { return numColumns; } }
+
     [SerializeField] int numRows = 20;
+    public int NumRows { get { return numRows; } }
 
     [SerializeField] Material matOcean;
     [SerializeField] Material matPlains;
@@ -17,7 +20,24 @@ public class HexMap : MonoBehaviour
     [SerializeField] Mesh meshWater;
 
     GameObject[,] hexObjects;
+
     Hex[,] hexes;
+
+    public Hex GetHexAt(int x, int y)
+    {
+        if (hexes == null)
+        {
+            Debug.LogError("Hexes array is not yet instantiated.");
+            return null;
+        }
+
+        if ((y < 0) || (y >= numRows))
+        {
+            return null;
+        }
+
+        return hexes[x % numColumns, y];
+    }
 
     protected void GenerateOcean()
     {
@@ -28,8 +48,11 @@ public class HexMap : MonoBehaviour
         {
             for (int y = 0; y < numRows; y++)
             {
-                hexes[x, y] = new Hex(x, y);
-                Vector3 inworldPos = hexes[x, y].PositionFromCamera(numColumns, numRows);
+                Hex hex = new Hex(x, y);
+
+                hexes[x, y] = hex;
+
+                Vector3 inworldPos = hex.PositionFromCamera(numColumns, numRows);
 
                 GameObject hexObject = Instantiate(
                     hexPrefab, 
@@ -41,12 +64,6 @@ public class HexMap : MonoBehaviour
                 hexObject.GetComponentInChildren<TextMesh>().text = x + ", " + y;
 
                 hexObjects[x, y] = hexObject;
-
-                MeshRenderer meshRenderer = hexObject.GetComponentInChildren<MeshRenderer>();
-                meshRenderer.material = matOcean;
-
-                MeshFilter meshFilter = hexObject.GetComponentInChildren<MeshFilter>();
-                meshFilter.mesh = meshWater;
             }
         }
     }
@@ -61,5 +78,43 @@ public class HexMap : MonoBehaviour
                 hexObjects[x, y].transform.position = newPosition;
             }
         }
+    }
+
+    public void UpdateHexVisuals()
+    {
+        for (int x = 0; x < numColumns; x++)
+        {
+            for (int y = 0; y < numRows; y++)
+            {
+                GameObject hexObject = hexObjects[x, y];
+
+                MeshRenderer meshRenderer = hexObject.GetComponentInChildren<MeshRenderer>();
+                if (hexes[x, y].Elevation < 0)
+                {
+                    meshRenderer.material = matOcean;
+                }
+                else
+                {
+                    meshRenderer.material = matGrasslands;
+                }
+
+                // MeshFilter meshFilter = hexObject.GetComponentInChildren<MeshFilter>();
+                // meshFilter.mesh = meshWater;
+            }
+        }
+    }
+
+    public Hex[] GetHexesWithinRangeOf(Hex centerHex, int range)
+    {
+        List<Hex> results = new List<Hex>();
+        for (int dx = -range; dx < range-1; dx++)
+        {
+            for(int dy = Mathf.Max(-range+1, -dx-range); dy < Mathf.Min(range, -dx+range-1); dy++)
+            {
+                results.Add(GetHexAt(centerHex.Q + dx, centerHex.R + dy));
+            }
+        }
+
+        return results.ToArray();
     }
 }

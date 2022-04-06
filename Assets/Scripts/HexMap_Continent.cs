@@ -12,5 +12,26 @@ public class HexMap_Continent : HexMap
     public void GenerateMap()
     {
         GenerateOcean();
+
+        ElevateArea(33, 3, 4);
+
+        UpdateHexVisuals();
+    }
+
+    void ElevateArea(int q, int r, int range)
+    {
+        Hex centerHex = GetHexAt(q, r);
+
+        // centerHex.Elevation = 0.5f;
+
+        Hex[] areaHexes = GetHexesWithinRangeOf(centerHex, range);
+
+        foreach (Hex hex in areaHexes)
+        {
+            if (hex != null)
+            {
+                hex.Elevation = 0.5f;
+            }
+        }
     }
 }

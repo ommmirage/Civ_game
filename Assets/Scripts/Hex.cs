@@ -9,19 +9,21 @@ using UnityEngine;
 public class Hex
 {
     // readonly means that variable is only set in the contructor
-    public readonly int q;
-    public readonly int r;
-    public readonly int s;
+    public readonly int Q;
+    public readonly int R;
+    public readonly int S;
 
     // static means that const belongs to the type, not the object
     static readonly float WIDTH_MULTIPLIER = Mathf.Sqrt(3) / 2;
 
     float radius = 1f;
 
+    public float Elevation = -1f;
+
     public Hex(int q, int r) {
-        this.q = q;
-        this.r = r;
-        s = -(q + r);
+        this.Q = q;
+        this.R = r;
+        S = -(q + r);
     }
 
     // Returns the world-space position of this hex
@@ -31,9 +33,9 @@ public class Hex
         float verticalSpacing = Height() * 0.75f;
 
         return new Vector3(
-            horizontalSpacing * (q + r / 2f),
+            horizontalSpacing * (Q + R / 2f),
             0,
-            verticalSpacing * r
+            verticalSpacing * R
         );
     }
 
