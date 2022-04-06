@@ -4,22 +4,22 @@ using UnityEngine;
 
 public class HexMap : MonoBehaviour
 {
-    [SerializeField] public GameObject hexPrefab;
-    [SerializeField] public Material[] hexMaterials;
+    [SerializeField] GameObject hexPrefab;
 
     [SerializeField] int numColumns = 40;
     [SerializeField] int numRows = 20;
 
+    [SerializeField] Material matOcean;
+    [SerializeField] Material matPlains;
+    [SerializeField] Material matGrasslands;
+    [SerializeField] Material matMountains;
+
+    [SerializeField] Mesh meshWater;
+
     GameObject[,] hexObjects;
     Hex[,] hexes;
-    // public GameObject[,] HexObjects { get { return hexObjects; } }
 
-    void Start()
-    {
-        GenerateMap();
-    }
-
-    public void GenerateMap()
+    protected void GenerateOcean()
     {
         hexObjects = new GameObject[numColumns, numRows];
         hexes = new Hex[numColumns, numRows];
@@ -29,19 +29,24 @@ public class HexMap : MonoBehaviour
             for (int y = 0; y < numRows; y++)
             {
                 hexes[x, y] = new Hex(x, y);
-                Vector3 position = hexes[x, y].PositionFromCamera(numColumns, numRows);
+                Vector3 inworldPos = hexes[x, y].PositionFromCamera(numColumns, numRows);
 
                 GameObject hexObject = Instantiate(
                     hexPrefab, 
-                    position,
+                    inworldPos,
                     new Quaternion(),
                     transform
                 );
 
+                hexObject.GetComponentInChildren<TextMesh>().text = x + ", " + y;
+
                 hexObjects[x, y] = hexObject;
 
                 MeshRenderer meshRenderer = hexObject.GetComponentInChildren<MeshRenderer>();
-                meshRenderer.material = hexMaterials[ Random.Range(0, hexMaterials.Length) ];
+                meshRenderer.material = matOcean;
+
+                MeshFilter meshFilter = hexObject.GetComponentInChildren<MeshFilter>();
+                meshFilter.mesh = meshWater;
             }
         }
     }

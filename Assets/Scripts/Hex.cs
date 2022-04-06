@@ -61,7 +61,6 @@ public class Hex
     {
         Vector3 position = Position();
 
-        // float mapHeight = numRows * VerticalSpacing();
         float mapWidth = numColumns * HorizontalSpacing();
 
         float cameraPosX = Camera.main.transform.position.x;
