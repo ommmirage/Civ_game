@@ -36,7 +36,9 @@ public class HexMap : MonoBehaviour
             return null;
         }
 
-        return hexes[x % numColumns, y];
+        int positiveX = x + numColumns;
+        
+        return hexes[positiveX % numColumns, y];
     }
 
     protected void GenerateOcean()
@@ -104,14 +106,15 @@ public class HexMap : MonoBehaviour
         }
     }
 
-    public Hex[] GetHexesWithinRangeOf(Hex centerHex, int range)
+    public Hex[] GetHexesWithinRangeOf(Hex centralHex, int range)
     {
         List<Hex> results = new List<Hex>();
+
         for (int dx = -range; dx < range-1; dx++)
         {
             for(int dy = Mathf.Max(-range+1, -dx-range); dy < Mathf.Min(range, -dx+range-1); dy++)
             {
-                results.Add(GetHexAt(centerHex.Q + dx, centerHex.R + dy));
+                results.Add(GetHexAt(centralHex.Q + dx, centralHex.R + dy));
             }
         }
 

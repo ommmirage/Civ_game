@@ -18,7 +18,9 @@ public class Hex
 
     float radius = 1f;
 
-    public float Elevation = -1f;
+    public float Elevation = -0.5f;
+
+    public int ContinentNumber = -1;
 
     public Hex(int q, int r) {
         this.Q = q;
