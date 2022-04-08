@@ -4,8 +4,12 @@ using UnityEngine;
 
 public class HexMap_Continent : HexMap
 {
-    [SerializeField] int minContinents = 1;
+    [Range(1, 3)]
+    [SerializeField] int minContinents = 2;
+    [Range(1, 3)]
     [SerializeField] int maxContinents = 2;
+
+    int numContinents;
 
     void Start()
     {
@@ -22,7 +26,7 @@ public class HexMap_Continent : HexMap
 
     void GenerateContinents()
     {
-        int numContinents = Random.Range(minContinents, maxContinents);
+        numContinents = Random.Range(minContinents, maxContinents);
 
         for (int i = 0; i < numContinents; i++)
         {
@@ -34,7 +38,7 @@ public class HexMap_Continent : HexMap
     {
         CentralHex continentCenter = GenerateContinentCenterHex(continentNumber);
 
-        int numSplats = Random.Range(3, 6);
+        int numSplats = Random.Range(3, 7 - numContinents);
 
         while (numSplats > 0)
         {
@@ -47,13 +51,7 @@ public class HexMap_Continent : HexMap
 
     CentralHex GenerateContinentCenterHex(int continentNumber)
     {
-        Hex hex;
-
-        do
-        {
-            hex = GetHexAt(continentNumber * 20, 10);
-        }
-        while (hex == null);
+        Hex hex = GetHexAt(NumColumns / numContinents * continentNumber, 10);
 
         CentralHex centralHex = new CentralHex(hex, 7);
         centralHex.ContinentNumber = continentNumber;
@@ -80,7 +78,7 @@ public class HexMap_Continent : HexMap
             return false;
         }
 
-        int range = Random.Range(3, 7);
+        int range = Random.Range(3, 8 - numContinents);
 
         ElevateArea(augmentationCenterHex, range, continentNumber);
         return true;
@@ -91,12 +89,9 @@ public class HexMap_Continent : HexMap
         ElevateArea(centralHex, centralHex.Range, continentNumber);
     }
 
-    void ElevateArea(
-        Hex elevationCenterHex, 
-        int range, 
-        int continentNumber, 
-        float centerHeight = 1.5f)
+    void ElevateArea(Hex elevationCenterHex, int range, int continentNumber, float centerHeight = 1.5f)
     {
+        
         Hex[] areaHexes = GetHexesWithinRangeOf(elevationCenterHex, range);
 
         foreach (Hex hex in areaHexes)
@@ -116,6 +111,9 @@ public class HexMap_Continent : HexMap
                         0f, 
                         HexMath.Distance(elevationCenterHex, hex) / range
                         );
+
+                    float noise = Random.Range(-0.1f, 0.5f);
+                    hex.Elevation += noise;
                     hex.ContinentNumber = continentNumber;
                 }
                 

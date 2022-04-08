@@ -23,6 +23,9 @@ public class HexMap : MonoBehaviour
 
     Hex[,] hexes;
 
+    float MountainHeight = 1.05f;
+    float HillHeight = 0.65f;
+
     public Hex GetHexAt(int x, int y)
     {
         if (hexes == null)
@@ -32,13 +35,14 @@ public class HexMap : MonoBehaviour
         }
 
         if ((y < 0) || (y >= numRows))
-        {
             return null;
-        }
 
-        int positiveX = x + numColumns;
+        x = x % numColumns;
+
+        if (x < 0)
+            x += numColumns;
         
-        return hexes[positiveX % numColumns, y];
+        return hexes[x, y];
     }
 
     protected void GenerateOcean()
@@ -89,15 +93,25 @@ public class HexMap : MonoBehaviour
             for (int y = 0; y < numRows; y++)
             {
                 GameObject hexObject = hexObjects[x, y];
+                Hex hex = hexes[x, y];
 
                 MeshRenderer meshRenderer = hexObject.GetComponentInChildren<MeshRenderer>();
-                if (hexes[x, y].Elevation < 0)
+
+                if (hex.Elevation > MountainHeight)
                 {
-                    meshRenderer.material = matOcean;
+                    meshRenderer.material = matMountains;
+                }
+                else if (hex.Elevation > HillHeight)
+                {
+                    meshRenderer.material = matPlains;
+                }
+                else if (hex.Elevation > 0)
+                {
+                    meshRenderer.material = matGrasslands;
                 }
                 else
                 {
-                    meshRenderer.material = matGrasslands;
+                    meshRenderer.material = matOcean;
                 }
 
                 // MeshFilter meshFilter = hexObject.GetComponentInChildren<MeshFilter>();
