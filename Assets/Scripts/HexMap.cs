@@ -6,25 +6,25 @@ public class HexMap : MonoBehaviour
 {
     [SerializeField] GameObject hexPrefab;
 
-    [SerializeField] int numColumns = 40;
-    public int NumColumns { get { return numColumns; } }
+    [SerializeField] int width = 85;
+    public int Width { get { return width; } }
 
-    [SerializeField] int numRows = 20;
-    public int NumRows { get { return numRows; } }
+    [SerializeField] int height = 50;
+    public int Height { get { return height; } }
 
     [SerializeField] Material matOcean;
     [SerializeField] Material matPlains;
     [SerializeField] Material matGrasslands;
     [SerializeField] Material matMountains;
 
-    [SerializeField] Mesh meshWater;
+    // [SerializeField] Mesh meshWater;
 
     GameObject[,] hexObjects;
 
     Hex[,] hexes;
 
-    float MountainHeight = 1.05f;
-    float HillHeight = 0.65f;
+    float MountainHeight = 1.3f;
+    float HillHeight = 0.75f;
 
     public Hex GetHexAt(int x, int y)
     {
@@ -34,31 +34,31 @@ public class HexMap : MonoBehaviour
             return null;
         }
 
-        if ((y < 0) || (y >= numRows))
+        if ((y < 0) || (y >= height))
             return null;
 
-        x = x % numColumns;
-
         if (x < 0)
-            x += numColumns;
+            x += width;
+        else
+            x = x % width;
         
         return hexes[x, y];
     }
 
     protected void GenerateOcean()
     {
-        hexObjects = new GameObject[numColumns, numRows];
-        hexes = new Hex[numColumns, numRows];
+        hexObjects = new GameObject[width, height];
+        hexes = new Hex[width, height];
 
-        for (int x = 0; x < numColumns; x++)
+        for (int x = 0; x < width; x++)
         {
-            for (int y = 0; y < numRows; y++)
+            for (int y = 0; y < height; y++)
             {
                 Hex hex = new Hex(x, y);
 
                 hexes[x, y] = hex;
 
-                Vector3 inworldPos = hex.PositionFromCamera(numColumns, numRows);
+                Vector3 inworldPos = hex.PositionFromCamera(width, height);
 
                 GameObject hexObject = Instantiate(
                     hexPrefab, 
@@ -76,11 +76,11 @@ public class HexMap : MonoBehaviour
 
     public void UpdateHexPositions()
     {
-        for (int x = 0; x < numColumns; x++)
+        for (int x = 0; x < width; x++)
         {
-            for (int y = 0; y < numRows; y++)
+            for (int y = 0; y < height; y++)
             {
-                Vector3 newPosition = hexes[x, y].PositionFromCamera(numColumns, numRows);
+                Vector3 newPosition = hexes[x, y].PositionFromCamera(width, height);
                 hexObjects[x, y].transform.position = newPosition;
             }
         }
@@ -88,9 +88,9 @@ public class HexMap : MonoBehaviour
 
     public void UpdateHexVisuals()
     {
-        for (int x = 0; x < numColumns; x++)
+        for (int x = 0; x < width; x++)
         {
-            for (int y = 0; y < numRows; y++)
+            for (int y = 0; y < height; y++)
             {
                 GameObject hexObject = hexObjects[x, y];
                 Hex hex = hexes[x, y];
@@ -124,14 +124,31 @@ public class HexMap : MonoBehaviour
     {
         List<Hex> results = new List<Hex>();
 
-        for (int dx = -range; dx < range-1; dx++)
+        for (int dx = -range; dx <= range; dx++)
         {
-            for(int dy = Mathf.Max(-range+1, -dx-range); dy < Mathf.Min(range, -dx+range-1); dy++)
+            for(int dy = Mathf.Max(-range, -dx-range); dy <= Mathf.Min(range, -dx+range); dy++)
             {
                 results.Add(GetHexAt(centralHex.Q + dx, centralHex.R + dy));
             }
         }
-
+        
         return results.ToArray();
+    }
+
+    public float Distance(Hex a, Hex b)
+    {
+        int dq = Mathf.Abs(a.Q - b.Q);
+        if (dq > width / 2)
+        {
+            dq = width - dq;
+        }
+
+        int ds = Mathf.Abs(a.S - b.S);
+        if (ds > width / 2)
+        {
+            ds = Mathf.Abs(width - ds);
+        }
+
+        return (dq + Mathf.Abs(a.R - b.R) + ds) / 2;
     }
 }

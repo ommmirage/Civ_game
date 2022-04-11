@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HexMap_Continent : HexMap
+public class HexMapContinents : HexMap
 {
     [Range(1, 3)]
     [SerializeField] int minContinents = 2;
@@ -20,6 +20,7 @@ public class HexMap_Continent : HexMap
     {
         GenerateOcean();
         GenerateContinents();
+        // ElevateArea(GetHexAt(0, 20), 5, 0);
 
         UpdateHexVisuals();
     }
@@ -38,7 +39,7 @@ public class HexMap_Continent : HexMap
     {
         CentralHex continentCenter = GenerateContinentCenterHex(continentNumber);
 
-        int numSplats = Random.Range(3, 7 - numContinents);
+        int numSplats = Random.Range(4, 15 - 3 * numContinents);
 
         while (numSplats > 0)
         {
@@ -51,9 +52,9 @@ public class HexMap_Continent : HexMap
 
     CentralHex GenerateContinentCenterHex(int continentNumber)
     {
-        Hex hex = GetHexAt(NumColumns / numContinents * continentNumber, 10);
+        Hex hex = GetHexAt(Width / numContinents * continentNumber, Height / 2);
 
-        CentralHex centralHex = new CentralHex(hex, 7);
+        CentralHex centralHex = new CentralHex(hex, 20);
         centralHex.ContinentNumber = continentNumber;
         ElevateArea(centralHex, continentNumber);
 
@@ -78,7 +79,7 @@ public class HexMap_Continent : HexMap
             return false;
         }
 
-        int range = Random.Range(3, 8 - numContinents);
+        int range = (Random.Range(7, 23 - 3 * numContinents));
 
         ElevateArea(augmentationCenterHex, range, continentNumber);
         return true;
@@ -99,20 +100,21 @@ public class HexMap_Continent : HexMap
             if (hex != null)
             {
                 // if another continent
-                if ((hex.ContinentNumber != continentNumber) && (hex.ContinentNumber != -1))
+                // if ((hex.ContinentNumber != continentNumber) && (hex.ContinentNumber != -1))
+                // {
+                //     hex.Elevation = -0.5f;
+                //     hex.ContinentNumber = -1;
+                // }
+                // else
                 {
-                    hex.Elevation = -0.5f;
-                    hex.ContinentNumber = -1;
-                }
-                else
-                {
-                    hex.Elevation += Mathf.Lerp(
+                    hex.Elevation += Mathf.Lerp( 
                         centerHeight, 
-                        0f, 
-                        HexMath.Distance(elevationCenterHex, hex) / range
+                        0f,
+                        Distance(elevationCenterHex, hex) / range
                         );
-
-                    float noise = Random.Range(-0.1f, 0.5f);
+                    Debug.Log("(" + hex.Q + ", " + hex.R + ") " + hex.Elevation + "\n"+
+                        Distance(elevationCenterHex, hex));
+                    float noise = Random.Range(0, 0.5f);
                     hex.Elevation += noise;
                     hex.ContinentNumber = continentNumber;
                 }
